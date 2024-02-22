@@ -1,5 +1,8 @@
 import React from 'react'
 
+
+const SECURITY_CODE = "123";
+
 class ClassState extends React.Component {
 
     constructor(props){
@@ -7,18 +10,23 @@ class ClassState extends React.Component {
         super(props);
 
         this.state = {
+            value: "",
             error: false,
             loading:false,
         }
     }
 
     componentDidUpdate(){
-        console.log("Actu");
         if (this.state.loading) {
             setTimeout(() => {
-                console.log("Hola");
-                this.setState({loading:false})
-            }, 3000);
+
+                if (SECURITY_CODE === this.state.value) {
+                    this.setState({error:false, loading:false});
+                } else {
+                    this.setState({error:true, loading:false})   
+                }
+            }, 2000);
+
         }
     }
 
@@ -28,7 +36,7 @@ class ClassState extends React.Component {
             <h2>Eliminar {this.props.name}</h2>
             <p>Por favor, escriba el código de seguridad.</p>
 
-            {this.state.error && (
+            {this.state.error && !this.state.loading &&(
                 <p>ERROR: El codigo es incorrecto</p>
             )}
 
@@ -38,7 +46,15 @@ class ClassState extends React.Component {
             )}
 
 
-            <input type='text' placeholder='código de seguridad'/>
+            <input  
+                type='text'
+                placeholder='código de seguridad'
+                value={this.state.value}
+                onChange={(event)=> {
+                    this.setState({value: event.target.value})
+                }}
+            />
+
             <button
                 onClick={() => this.setState({loading: true})}
                 >Comprobar</button>
